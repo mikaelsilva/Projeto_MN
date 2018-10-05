@@ -21,6 +21,7 @@ def euler(expressao,valor_h,valor_passos,lista_y_euler,lista_t_euler,euler):
 
 	return 
 
+
 def euler_n_mais_1(expressao,valor_y2,valor_t2,valor_h2):
 
 	Fn2=S(expressao).subs({'t':valor_t2,'y':valor_y2})
@@ -28,6 +29,7 @@ def euler_n_mais_1(expressao,valor_y2,valor_t2,valor_h2):
 	
 	return valor_y2
 
+# APROXIMAÇÕES COM POUCO ERRO 
 def euler_inverso(expressao,valor_h,valor_passos,lista_y_inverso,lista_t_inverso,inverso):
 	
 	valor_y=lista_y_inverso[0]
@@ -43,12 +45,13 @@ def euler_inverso(expressao,valor_h,valor_passos,lista_y_inverso,lista_t_inverso
 		Fn=S(expressao).subs({'t':valor_t_mais_1,'y':valor_y_mais_1}) #Fn+1
 		valor_y=valor_y+valor_h*Fn
 		valor_t=valor_t+valor_h
-		if(inverso==1):print ("%d  %.10f" %(i , valor_y))
+		if(inverso==1):print ("%d  %.10f" %(i+1 , valor_y))
 		
 		lista_y_inverso.append(valor_y)
 		lista_t_inverso.append(valor_t)
 	return 
 
+# APROXIMAÇÕES COM POUCO "ERRO" 
 def euler_aprimorado(expressao,valor_h,valor_passos,lista_y_aprimorado,lista_t_aprimorado,aprimorado):
 
 	valor_y=lista_y_aprimorado[0]
@@ -58,7 +61,8 @@ def euler_aprimorado(expressao,valor_h,valor_passos,lista_y_aprimorado,lista_t_a
 	for i in range(valor_passos):
 
 		#Fn_mais_1
-		valor_y_mais_1=euler_n_mais_1(expressao,valor_y,valor_t,valor_h)
+		Fn_mais_1=S(expressao).subs({'t':valor_t,'y':valor_y})
+		valor_y_mais_1=valor_y+valor_h*Fn_mais_1
 		valor_t_mais_1=valor_t+valor_h
 		Fn_mais_1=S(expressao).subs({'t':valor_t_mais_1,'y':valor_y_mais_1})
 
@@ -75,6 +79,7 @@ def euler_aprimorado(expressao,valor_h,valor_passos,lista_y_aprimorado,lista_t_a
 
 	return
 
+# APROXIMAÇAO RAZOAVELMENTE BOA
 def runge_kutta(expressao,valor_h,valor_passos,lista_y_kutta,lista_t_kutta,kutta):
 
 
@@ -379,9 +384,6 @@ def formula_inversa(expressao,ordem,valor_h,valor_passos,lista_y_inversa,lista_t
 
 
 #INICIO DA ''MAIN''
-#Lendo o arquivo
-arquivo=open('arquivo.txt','r')
-leitura=arquivo.read().split()
 
 
 #Declarações Iniciais
@@ -416,273 +418,278 @@ lista_t_moulton=[]
 lista_y_inversa=[]
 lista_t_inversa=[]
 
-#-------------------------------PASSOS SIMPLES---------------------------------#
-if(leitura[0]=='euler'):
-	print ('Metodo de euler')
-	print ('y(',leitura[2],') =',leitura[1])
-	print ('h =',leitura[3])
-
-	lista_y_euler.append(int(leitura[1]))
-	lista_t_euler.append(int(leitura[2]))
-	valor_h=float(leitura[3])
-	valor_passos=int(leitura[4])
-
-
-	euler(leitura[5],valor_h,valor_passos,lista_y_euler,lista_t_euler,1)
-	plt.plot(lista_t_euler, lista_y_euler)
-	plt.show()
-
-if(leitura[0]=='euler_inverso'):
-	print ('Metodo de euler_inverso')
-	print ('y(',leitura[2],') =',leitura[1])
-	print ('h =',leitura[3])
-
-	lista_y_inverso.append(int(leitura[1]))
-	lista_t_inverso.append(int(leitura[2]))
-	valor_h=float(leitura[3])
-	valor_passos=int(leitura[4])
-
-	euler_inverso(leitura[5],valor_h,valor_passos,lista_y_inverso,lista_t_inverso,1)
-	plt.plot(lista_t_inverso, lista_y_inverso)
-	plt.show()
-
-if(leitura[0]=='euler_aprimorado'):
+arquivo=open('arquivo.txt','r')
+leitura=arquivo.readline().split()
+for l in leitura:
 	
-	print ('Metodo de euler_aprimorado')
-	print ('y(',leitura[2],') =',leitura[1])
-	print ('h =',leitura[3])
+	print (leitura[0])
+#-------------------------------PASSOS SIMPLES---------------------------------#
+	if(leitura[0]=='euler'):
+		print ('Metodo de euler')
+		print ('y(',leitura[2],') =',leitura[1])
+		print ('h =',leitura[3])
 
-	valor_passos=int(leitura[4])
-	valor_h=float(leitura[3])
-	lista_y_aprimorado.append(int(leitura[1]))
-	lista_t_aprimorado.append(int(leitura[2]))
-
-	euler_aprimorado(leitura[5],valor_h,valor_passos,lista_y_aprimorado,lista_t_aprimorado,1)
-	plt.plot(lista_t_aprimorado, lista_y_aprimorado)
-	plt.show()
-
-if(leitura[0]=='runge_kutta'):
-	print ('Metodo de runge_kutta')
-	print ('y(',leitura[2],') =',leitura[1])
-	print ('h =',leitura[3])
-
-	valor_passos=int(leitura[4])
-	valor_h=float(leitura[3])
-	lista_y_kutta.append(int(leitura[1]))
-	lista_t_kutta.append(int(leitura[2]))
-
-	runge_kutta(leitura[5],valor_h,valor_passos,lista_y_kutta,lista_t_kutta,1)
-	#runge_kutta5(expressao,valor_y,valor_t,valor_h,valor_passos,lista_y_kutta5,lista_t_kutta5)
-	plt.plot(lista_t_kutta, lista_y_kutta)
-	plt.show()
+		lista_y_euler.append(int(leitura[1]))
+		lista_t_euler.append(int(leitura[2]))
+		valor_h=float(leitura[3])
+		valor_passos=int(leitura[4])
 
 
-#-------------------------------ADAM_BASHFORTH-----------------------------#
-if(leitura[0]=='adam_bashforth'):	
-		t3=float(leitura[len(leitura)-5])
-		valor_h=float(leitura[len(leitura)-4])
+		euler(leitura[5],valor_h,valor_passos,lista_y_euler,lista_t_euler,1)
+		plt.plot(lista_t_euler, lista_y_euler)
+		plt.show()
+
+	if(leitura[0]=='euler_inverso'):
+		print ('Metodo de euler_inverso')
+		print ('y(',leitura[2],') =',leitura[1])
+		print ('h =',leitura[3])
+
+		lista_y_inverso.append(int(leitura[1]))
+		lista_t_inverso.append(int(leitura[2]))
+		valor_h=float(leitura[3])
+		valor_passos=int(leitura[4])
+
+		euler_inverso(leitura[5],valor_h,valor_passos,lista_y_inverso,lista_t_inverso,1)
+		plt.plot(lista_t_inverso, lista_y_inverso)
+		plt.show()
+
+	if(leitura[0]=='euler_aprimorado'):
 		
-		for i in range(1,len(leitura)-5):
-			y3=float(leitura[i])
-			lista_y_adam.append(y3)
-			lista_t_adam.append(t3)
-			t3=t3+valor_h
+		print ('Metodo de euler_aprimorado')
+		print ('y(',leitura[2],') =',leitura[1])
+		print ('h =',leitura[3])
 
-		valor_passos=int(leitura[len(leitura)-3])
+		valor_passos=int(leitura[4])
+		valor_h=float(leitura[3])
+		lista_y_aprimorado.append(int(leitura[1]))
+		lista_t_aprimorado.append(int(leitura[2]))
+
+		euler_aprimorado(leitura[5],valor_h,valor_passos,lista_y_aprimorado,lista_t_aprimorado,1)
+		plt.plot(lista_t_aprimorado, lista_y_aprimorado)
+		plt.show()
+
+	if(leitura[0]=='runge_kutta'):
+		print ('Metodo de runge_kutta')
+		print ('y(',leitura[2],') =',leitura[1])
+		print ('h =',leitura[3])
+
+		valor_passos=int(leitura[4])
+		valor_h=float(leitura[3])
+		lista_y_kutta.append(int(leitura[1]))
+		lista_t_kutta.append(int(leitura[2]))
+
+		runge_kutta(leitura[5],valor_h,valor_passos,lista_y_kutta,lista_t_kutta,1)
+		#runge_kutta5(expressao,valor_y,valor_t,valor_h,valor_passos,lista_y_kutta5,lista_t_kutta5)
+		plt.plot(lista_t_kutta, lista_y_kutta)
+		plt.show()
+
+
+	#-------------------------------ADAM_BASHFORTH-----------------------------#
+	if(leitura[0]=='adam_bashforth'):	
+			t3=float(leitura[len(leitura)-5])
+			valor_h=float(leitura[len(leitura)-4])
+			
+			for i in range(1,len(leitura)-5):
+				y3=float(leitura[i])
+				lista_y_adam.append(y3)
+				lista_t_adam.append(t3)
+				t3=t3+valor_h
+
+			valor_passos=int(leitura[len(leitura)-3])
+			ordem=int(leitura[len(leitura)-1])
+			adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
+			plt.plot(lista_t_adam, lista_y_adam)
+			plt.show()
+
+	if(leitura[0]=='adam_bashforth_by_euler'):	
 		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_adam.append(int(leitura[1]))
+		lista_t_adam.append(int(leitura[2]))
+
+		euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,0)
 		adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
+
 		plt.plot(lista_t_adam, lista_y_adam)
 		plt.show()
 
-if(leitura[0]=='adam_bashforth_by_euler'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_adam.append(int(leitura[1]))
-	lista_t_adam.append(int(leitura[2]))
+	if(leitura[0]=='adam_bashforth_by_euler_inverso'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_adam.append(int(leitura[1]))
+		lista_t_adam.append(int(leitura[2]))
 
-	euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,0)
-	adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
+		euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,0)
+		adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
 
-	plt.plot(lista_t_adam, lista_y_adam)
-	plt.show()
+		plt.plot(lista_t_adam, lista_y_adam)
+		plt.show()
 
-if(leitura[0]=='adam_bashforth_by_euler_inverso'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_adam.append(int(leitura[1]))
-	lista_t_adam.append(int(leitura[2]))
+	if(leitura[0]=='adam_bashforth_by_euler_aprimorado'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_adam.append(int(leitura[1]))
+		lista_t_adam.append(int(leitura[2]))
 
-	euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,0)
-	adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
+		euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,0)
+		adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
 
-	plt.plot(lista_t_adam, lista_y_adam)
-	plt.show()
+		plt.plot(lista_t_adam, lista_y_adam)
+		plt.show()
 
-if(leitura[0]=='adam_bashforth_by_euler_aprimorado'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_adam.append(int(leitura[1]))
-	lista_t_adam.append(int(leitura[2]))
+	if(leitura[0]=='adam_bashforth_by_runge_kutta'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_adam.append(int(leitura[1]))
+		lista_t_adam.append(int(leitura[2]))
 
-	euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,0)
-	adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
+		runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,0)
+		adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
 
-	plt.plot(lista_t_adam, lista_y_adam)
-	plt.show()
+		plt.plot(lista_t_adam, lista_y_adam)
+		plt.show()
 
-if(leitura[0]=='adam_bashforth_by_runge_kutta'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_adam.append(int(leitura[1]))
-	lista_t_adam.append(int(leitura[2]))
-
-	runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,0)
-	adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
-
-	plt.plot(lista_t_adam, lista_y_adam)
-	plt.show()
-
-#------------------------------ADAM MOULTON---------------------------------#
-if(leitura[0]=='adam_multon'):	
-	t3=float(leitura[len(leitura)-5])
-	valor_h=float(leitura[len(leitura)-4])
-		
-	for i in range(1,len(leitura)-5):
-		y3=float(leitura[i])
-		lista_y_moulton.append(y3)
-		lista_t_moulton.append(t3)
-		t3=t3+valor_h
-
-	valor_passos=int(leitura[len(leitura)-3])
-	ordem=int(leitura[len(leitura)-1])
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-	plt.plot(lista_t_moulton, lista_y_moulton)
-	plt.show()
-
-if(leitura[0]=='adam_multon_by_euler'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_moulton.append(int(leitura[1]))
-	lista_t_moulton.append(int(leitura[2]))
-
-	euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-
-	plt.plot(lista_t_moulton, lista_y_moulton)
-	plt.show()
-
-if(leitura[0]=='adam_multon_by_euler_inverso'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_moulton.append(int(leitura[1]))
-	lista_t_moulton.append(int(leitura[2]))
-
-	euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-
-	plt.plot(lista_t_moulton, lista_y_moulton)
-	plt.show()
-
-if(leitura[0]=='adam_multon_by_euler_aprimorado'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_moulton.append(int(leitura[1]))
-	lista_t_moulton.append(int(leitura[2]))
-
-	euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-
-	plt.plot(lista_t_moulton, lista_y_moulton)
-	plt.show()
-
-if(leitura[0]=='adam_multon_by_runge_kutta'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_moulton.append(int(leitura[1]))
-	lista_t_moulton.append(int(leitura[2]))
-
-	runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-
-	plt.plot(lista_t_moulton, lista_y_moulton)
-	plt.show()
-
-#----------------------------FORMULA INVERSA----------------------------------#
-if(leitura[0]=='formula_inversa'):
+	#------------------------------ADAM MOULTON---------------------------------#
+	if(leitura[0]=='adam_multon'):	
 		t3=float(leitura[len(leitura)-5])
 		valor_h=float(leitura[len(leitura)-4])
-		
+			
 		for i in range(1,len(leitura)-5):
 			y3=float(leitura[i])
-			lista_y_inversa.append(y3)
-			lista_t_inversa.append(t3)
+			lista_y_moulton.append(y3)
+			lista_t_moulton.append(t3)
 			t3=t3+valor_h
 
 		valor_passos=int(leitura[len(leitura)-3])
 		ordem=int(leitura[len(leitura)-1])
-		formula_inversa(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
+		plt.plot(lista_t_moulton, lista_y_moulton)
+		plt.show()
+
+	if(leitura[0]=='adam_multon_by_euler'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_moulton.append(int(leitura[1]))
+		lista_t_moulton.append(int(leitura[2]))
+
+		euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
+
+		plt.plot(lista_t_moulton, lista_y_moulton)
+		plt.show()
+
+	if(leitura[0]=='adam_multon_by_euler_inverso'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_moulton.append(int(leitura[1]))
+		lista_t_moulton.append(int(leitura[2]))
+
+		euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
+
+		plt.plot(lista_t_moulton, lista_y_moulton)
+		plt.show()
+
+	if(leitura[0]=='adam_multon_by_euler_aprimorado'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_moulton.append(int(leitura[1]))
+		lista_t_moulton.append(int(leitura[2]))
+
+		euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
+
+		plt.plot(lista_t_moulton, lista_y_moulton)
+		plt.show()
+
+	if(leitura[0]=='adam_multon_by_runge_kutta'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_moulton.append(int(leitura[1]))
+		lista_t_moulton.append(int(leitura[2]))
+
+		runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
+
+		plt.plot(lista_t_moulton, lista_y_moulton)
+		plt.show()
+
+	#----------------------------FORMULA INVERSA----------------------------------#
+	if(leitura[0]=='formula_inversa'):
+			t3=float(leitura[len(leitura)-5])
+			valor_h=float(leitura[len(leitura)-4])
+			
+			for i in range(1,len(leitura)-5):
+				y3=float(leitura[i])
+				lista_y_inversa.append(y3)
+				lista_t_inversa.append(t3)
+				t3=t3+valor_h
+
+			valor_passos=int(leitura[len(leitura)-3])
+			ordem=int(leitura[len(leitura)-1])
+			formula_inversa(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
+			plt.plot(lista_t_inversa, lista_y_inversa)
+			plt.show()
+
+	if(leitura[0]=='formula_inversa_by_euler'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_inversa.append(int(leitura[1]))
+		lista_t_inversa.append(int(leitura[2]))
+
+		euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,0)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
+
 		plt.plot(lista_t_inversa, lista_y_inversa)
 		plt.show()
 
-if(leitura[0]=='formula_inversa_by_euler'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_inversa.append(int(leitura[1]))
-	lista_t_inversa.append(int(leitura[2]))
+	if(leitura[0]=='formula_inversa_by_euler_inverso'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_inversa.append(int(leitura[1]))
+		lista_t_inversa.append(int(leitura[2]))
 
-	euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,0)
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
+		euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,0)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
 
-	plt.plot(lista_t_inversa, lista_y_inversa)
-	plt.show()
+		plt.plot(lista_t_inversa, lista_y_inversa)
+		plt.show()
 
-if(leitura[0]=='formula_inversa_by_euler_inverso'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_inversa.append(int(leitura[1]))
-	lista_t_inversa.append(int(leitura[2]))
+	if(leitura[0]=='formula_inversa_by_euler_aprimorado'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_inversa.append(int(leitura[1]))
+		lista_t_inversa.append(int(leitura[2]))
 
-	euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,0)
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
+		euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,0)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
 
-	plt.plot(lista_t_inversa, lista_y_inversa)
-	plt.show()
+		plt.plot(lista_t_inversa, lista_y_inversa)
+		plt.show()
 
-if(leitura[0]=='formula_inversa_by_euler_aprimorado'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_inversa.append(int(leitura[1]))
-	lista_t_inversa.append(int(leitura[2]))
+	if(leitura[0]=='formula_inversa_by_runge_kutta'):	
+		ordem=int(leitura[len(leitura)-1])
+		valor_passos=int(leitura[len(leitura)-3])
+		valor_h=float(leitura[3])
+		lista_y_inversa.append(int(leitura[1]))
+		lista_t_inversa.append(int(leitura[2]))
 
-	euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,0)
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
+		runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,0)
+		adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
 
-	plt.plot(lista_t_inversa, lista_y_inversa)
-	plt.show()
-
-if(leitura[0]=='formula_inversa_by_runge_kutta'):	
-	ordem=int(leitura[len(leitura)-1])
-	valor_passos=int(leitura[len(leitura)-3])
-	valor_h=float(leitura[3])
-	lista_y_inversa.append(int(leitura[1]))
-	lista_t_inversa.append(int(leitura[2]))
-
-	runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,0)
-	adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
-
-	plt.plot(lista_t_inversa, lista_y_inversa)
-	plt.show()
+		plt.plot(lista_t_inversa, lista_y_inversa)
+		plt.show()
 
 
 
