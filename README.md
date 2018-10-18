@@ -18,13 +18,13 @@ Implementação dos metodos numericos: Euler,Euler Inverso, Euler Aprimorado, Ru
  # Testes:
  Os testes utilizados na analise dos métodos estão no arquivo.txt, os valores calculados em cada método serão salvos no arquivo saida.txt, de acordo com a especificação do projeto, estes são alguns exemplos do tipo e formato de informação que será encontrado no arquivo.txt:
  
-euler 0 0 20 1-t+4*y
-euler_inverso 0 0 0.1 20 1-t+4*y
-euler_aprimorado 0 0 0.1 20 1-t+4*y
-runge_kutta 0 0 0.1 20 1-t+4*y
-adam_bashforth 0.0 0.1 0.23 0.402 0.6328 0 0.1 20 1-t+4*y 6
-adam_multon 0.0 0.1 0.23 0.402 0.6328 0 0.1 20 1-t+4*y 6
-formula_inversa 0.0 0.1 0.23 0.402 0.6328 0 0.1 20 1-t+4*y 6
+-euler 0 0 20 1-t+4*y
+-euler_inverso 0 0 0.1 20 1-t+4*y
+-euler_aprimorado 0 0 0.1 20 1-t+4*y
+-runge_kutta 0 0 0.1 20 1-t+4*y
+-adam_bashforth 0.0 0.1 0.23 0.402 0.6328 0 0.1 20 1-t+4*y 6
+-adam_multon 0.0 0.1 0.23 0.402 0.6328 0 0.1 20 1-t+4*y 6
+-formula_inversa 0.0 0.1 0.23 0.402 0.6328 0 0.1 20 1-t+4*y 6
 
 Para os casos em que irá se analisar os metodos (bônus) sem previsão, foi inserido o nome _sem_previsao, na frente do nome de seu metodo, exemplo:
 euler_inverso_sem_previsao 0 0 0.1 20 1-t+4*y
