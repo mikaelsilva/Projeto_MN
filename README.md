@@ -3,11 +3,11 @@ Implementação dos metodos numericos: Euler,Euler Inverso, Euler Aprimorado, Ru
 
 # Pré-requisitos:
 1.Instale a biblioteca sympy com os comandos:
-  sudo apt-get install python3-pip
-  sudo pip3 install sympy
+  * sudo apt-get install python3-pip
+  * sudo pip3 install sympy
   
 2. Instale a biblioteca matplotlib:
-  sudo apt-get install python3-matplotlib
+  * sudo apt-get install python3-matplotlib
 
 3. Já no diretorio onde está o arquivo projeto.py execute:
   python3 projeto.py
@@ -29,11 +29,11 @@ Implementação dos metodos numericos: Euler,Euler Inverso, Euler Aprimorado, Ru
 * formula_inversa 0.0 0.1 0.23 0.402 0.6328 0 0.1 20 1-t+4*y 6
 
 Para os casos em que irá se analisar os metodos (bônus) sem previsão, foi inserido o nome _sem_previsao, na frente do nome de seu metodo, exemplo:
-euler_inverso_sem_previsao 0 0 0.1 20 1-t+4*y
-euler__aprimorado_sem_previsao 0 0 0.1 20 1-t+4*y
+* euler_inverso_sem_previsao 0 0 0.1 20 1-t+4*y
+* euler__aprimorado_sem_previsao 0 0 0.1 20 1-t+4*y
 
 Também foi relizado a implementação (bônus) do método de Runge-Kutta de 5 ordem, que estará informado no aquivo.txt da seguinte forma:
-runge_kutta5 0 0 0.1 20 1-t+4*y
+* runge_kutta5 0 0 0.1 20 1-t+4*y
 
 
 
