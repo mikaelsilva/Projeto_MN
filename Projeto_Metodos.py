@@ -1,7 +1,6 @@
 from sympy import symbols, Function, solve,Eq,S,sympify,Symbol
 from matplotlib import pyplot as plt
 import sympy 
-#AINDA FALTA TERMINAR
 
 #---------------------------------------------------------------------------------#
 #OK, Yn+1= Yn+Fn
@@ -440,16 +439,18 @@ def adam_moulton4(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton):
 
 def adam_moulton5(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton):
 	Fn=[]
-	
+
 	#Calculo de Yn+1 com Bashforth de 5 ordem, para encontrarmos Fn+1
 	valor_y_mais_1=adam_bashforth5(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton)
 	valor_t_mais_1=lista_t_moulton[ordem+n]+valor_h
 	Fn_mais_1=S(expressao).subs({'t':valor_t_mais_1,'y':valor_y_mais_1})
 
-	for i in range(ordem+1):
+	#Calculo Fn para os valores anteriores, Fn-1, Fn-2 ........
+	for i in range(0,ordem+1):
 		Fn.append(S(expressao).subs({'t':lista_t_moulton[n],'y':lista_y_moulton[n]}))
 		n=n+1
 
+	#Calculo pelos coeficientes
 	Fn_mais_1=Fn_mais_1*475
 	Fn_0=((1427)*Fn[4])
 	Fn_1=((798)*Fn[3])
@@ -457,8 +458,7 @@ def adam_moulton5(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton):
 	Fn_3=((173)*Fn[1])
 	Fn_4=((27)*Fn[0])
 
-	Fn_total =((valor_h/1440)*(Fn_mais_1+Fn_0-Fn_1+Fn_2-Fn_3+Fn_4))
-	print ('OLHA ->',Fn_total)
+	Fn_total = ((valor_h/1440)*(Fn_mais_1+Fn_0-Fn_1+Fn_2-Fn_3+Fn_4))
 
 	return Fn_total
 
@@ -514,29 +514,28 @@ def adam_moulton7(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton):
 def adam_moulton(expressao,ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton):
 	n=0
 
-	ordem=ordem-1
-	
+	ordem=ordem-2
 
 	valor_y=lista_y_moulton[ordem]
 	valor_t=lista_t_moulton[ordem]
-	print (valor_t,valor_y)
 	
-	for i in range(ordem+1,valor_passos+1):
+	
+	for i in range(ordem,valor_passos+1):
 		
 
-		if ((ordem+1) == 1):
+		if ((ordem+2) == 2):
 			Fn=adam_moulton1(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton)
-		if ((ordem+1) == 2):
+		if ((ordem+2) == 3):
 			Fn=adam_moulton2(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton)
-		if ((ordem+1) == 3):
+		if ((ordem+2) == 4):
 			Fn=adam_moulton3(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton)
-		if ((ordem+1) == 4):
+		if ((ordem+2) == 5):
 			Fn=adam_moulton4(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton)
-		if ((ordem+1) == 5):
+		if ((ordem+2) == 6):
 			Fn=adam_moulton5(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton)
-		if ((ordem+1) == 6):
+		if ((ordem+2) == 7):
 			Fn=adam_moulton6(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton)
-		if ((ordem+1) == 7):
+		if ((ordem+2) == 8):
 			Fn=adam_moulton7(expressao,ordem,n,valor_h,lista_y_moulton,lista_t_moulton)
 
 		n=n+1
@@ -735,8 +734,6 @@ with open('arquivo.txt') as final:
 			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
 			salvar.write('h =  '+ str(leitura[3])+ '\n')
 
-
-
 			lista_y_euler.append(float(leitura[1]))
 			lista_t_euler.append(float(leitura[2]))
 			valor_h=float(leitura[3])
@@ -744,11 +741,14 @@ with open('arquivo.txt') as final:
 
 
 			euler(leitura[5],valor_h,valor_passos,lista_y_euler,lista_t_euler,0)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_euler[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_euler, lista_y_euler)
+			plt.title('Euler')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 		
 
@@ -766,11 +766,14 @@ with open('arquivo.txt') as final:
 			valor_passos=int(leitura[4])
 
 			euler_inverso(leitura[5],valor_h,valor_passos,lista_y_inverso,lista_t_inverso,0)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_inverso[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_inverso, lista_y_inverso)
+			plt.title('Euler_Inverso')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 			
 			lista_t_inverso.clear()
@@ -787,11 +790,14 @@ with open('arquivo.txt') as final:
 			valor_passos=int(leitura[4])
 
 			euler_inverso_sem_previsao(leitura[5],valor_h,valor_passos,lista_y_inverso,lista_t_inverso,0)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_inverso[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_inverso, lista_y_inverso)
+			plt.title('Euler_Inverso_Sem_Previsao')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 			
 			lista_t_inverso.clear()
@@ -808,11 +814,14 @@ with open('arquivo.txt') as final:
 			lista_t_aprimorado.append(float(leitura[2]))
 
 			euler_aprimorado(leitura[5],valor_h,valor_passos,lista_y_aprimorado,lista_t_aprimorado,0)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_aprimorado[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_aprimorado, lista_y_aprimorado)
+			plt.title('Euler_Aprimorado')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 
@@ -830,11 +839,14 @@ with open('arquivo.txt') as final:
 			lista_t_aprimorado.append(float(leitura[2]))
 
 			euler_aprimorado_sem_previsao(leitura[5],valor_h,valor_passos,lista_y_aprimorado,lista_t_aprimorado,0)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_aprimorado[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_aprimorado, lista_y_aprimorado)
+			plt.title('Euler_Aprimorado_Sem_Previsao')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 
@@ -852,11 +864,14 @@ with open('arquivo.txt') as final:
 			lista_t_kutta.append(float(leitura[2]))
 
 			runge_kutta(leitura[5],valor_h,valor_passos,lista_y_kutta,lista_t_kutta,0)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_kutta[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_kutta, lista_y_kutta)
+			plt.title('Runge_Kutta')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 			lista_t_kutta.clear()
@@ -873,12 +888,15 @@ with open('arquivo.txt') as final:
 			lista_t_kutta5.append(float(leitura[2]))
 
 			runge_kutta5(leitura[5],valor_h,valor_passos,lista_y_kutta5,lista_t_kutta5,0)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_kutta5[i]) + '\n')
 			salvar.write('\n')
 
 
 			plt.plot(lista_t_kutta5, lista_y_kutta5)
+			plt.title('Runge_Kutta5')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 			lista_t_kutta5.clear()
@@ -887,7 +905,7 @@ with open('arquivo.txt') as final:
 #-------------------------------ADAM_BASHFORTH-----------------------------#
 		if(leitura[0]=='adam_bashforth'):	
 			salvar.write('Metodo de Adam_Bashforth\n')
-			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
+			salvar.write('y(' + str(leitura[len(leitura)-5]) +') = ' + str(leitura[1]) + '\n')
 			salvar.write('h =  '+ str(leitura[len(leitura)-4])+ '\n')
 
 			t3=float(leitura[len(leitura)-5])
@@ -904,10 +922,13 @@ with open('arquivo.txt') as final:
 			ordem=int(leitura[len(leitura)-1])
 
 			adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_adam[i]) + '\n')
 
 			plt.plot(lista_t_adam, lista_y_adam)
+			plt.title('Adam-Bashforth')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 		
 		if(leitura[0]=='adam_bashforth_by_euler'):	
@@ -923,12 +944,15 @@ with open('arquivo.txt') as final:
 
 			euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,1)
 			adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_adam[i]) + '\n')
 			salvar.write('\n')
 
 
 			plt.plot(lista_t_adam, lista_y_adam)
+			plt.title('Adam-Bashforth por Euler')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='adam_bashforth_by_euler_inverso'):	
@@ -944,11 +968,37 @@ with open('arquivo.txt') as final:
 
 			euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,1)
 			adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_adam[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_adam, lista_y_adam)
+			plt.title('Adam-Bashforth por Euler_Inverso')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
+			plt.show()
+
+		if(leitura[0]=='adam_bashforth_by_euler_inverso_sem_previsao'):	
+			salvar.write('Metodo de Adam_Bashforth_By_Euler_Inverso_Sem_Previsao\n')
+			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
+			salvar.write('h =  '+ str(leitura[len(leitura)-4])+ '\n')
+
+			ordem=int(leitura[len(leitura)-1])
+			valor_passos=int(leitura[len(leitura)-3])
+			valor_h=float(leitura[3])
+			lista_y_adam.append(float(leitura[1]))
+			lista_t_adam.append(float(leitura[2]))
+
+			euler_inverso_sem_previsao(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,1)
+			adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
+			for i in range(valor_passos+1):
+				salvar.write(str(i) + ' ' + str(lista_y_adam[i]) + '\n')
+			salvar.write('\n')
+
+			plt.plot(lista_t_adam, lista_y_adam)
+			plt.title('Adam-Bashforth por Euler_Inverso_Sem_Previsao')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='adam_bashforth_by_euler_aprimorado'):	
@@ -964,15 +1014,18 @@ with open('arquivo.txt') as final:
 
 			euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,1)
 			adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_adam[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_adam, lista_y_adam)
+			plt.title('Adam-Bashforth por Euler_Aprimorado')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='adam_bashforth_by_runge_kutta'):	
-			salvar.write('Metodo de Adam_Bashforth_By_Runge_Kutta\n')
+			salvar.write('Metodo de Adam_Bashforth_By_Runge_Kutta (ordem=' + str(leitura[len(leitura)-1]) + ')' + '\n')
 			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
 			salvar.write('h =  '+ str(leitura[len(leitura)-4])+ '\n')
 
@@ -984,46 +1037,27 @@ with open('arquivo.txt') as final:
 
 			runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,1)
 			adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_adam[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_adam, lista_y_adam)
-			plt.show()
-
-
-		#CORRIGIRRRR NÃO ESQUECERRR
-		if(leitura[0]=='adam_bashforth_by_runge_kutta5'):	
-			salvar.write('Metodo de Adam_Bashforth_By_Runge_Kutta5\n')
-			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
-			salvar.write('h =  '+ str(leitura[len(leitura)-4])+ '\n')
-
-			ordem=int(leitura[len(leitura)-1])
-			valor_passos=int(leitura[len(leitura)-3])
-			valor_h=float(leitura[3])
-			lista_y_adam.append(float(leitura[1]))
-			lista_t_adam.append(float(leitura[2]))
-
-			#runge_kutta5(leitura[len(leitura)-2],valor_h,ordem,lista_y_adam,lista_t_adam,1)
-			#dam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
-			for i in range(21):
-				salvar.write(str(i) + ' ' + str(lista_y_adam[i]) + '\n')
-			salvar.write('\n')
-
-			plt.plot(lista_t_adam, lista_y_adam)
+			plt.title('Adam-Bashforth por Runge_Kutta')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		lista_t_adam.clear()
 		lista_y_adam.clear()
 #------------------------------ADAM MOULTON---------------------------------#
 		if(leitura[0]=='adam_multon'):	
-			salvar.write('Metodo de Adam_Multon\n')
+			salvar.write('Metodo de Adam_Moulton\n')
 			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
 			salvar.write('h =  '+ str(leitura[len(leitura)-4])+ '\n')
 
 			t3=float(leitura[len(leitura)-5])
 			valor_h=float(leitura[len(leitura)-4])
-					
+
 			for i in range(1,len(leitura)-5):
 				y3=float(leitura[i])
 				lista_y_moulton.append(y3)
@@ -1034,11 +1068,14 @@ with open('arquivo.txt') as final:
 			ordem=int(leitura[len(leitura)-1])
 
 			adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_moulton[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_moulton, lista_y_moulton)
+			plt.title('Adam-Moulton')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='adam_multon_by_euler'):	
@@ -1054,11 +1091,14 @@ with open('arquivo.txt') as final:
 
 			euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,1)
 			adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_moulton[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_moulton, lista_y_moulton)
+			plt.title('Adam-Moulton por Euler')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='adam_multon_by_euler_inverso'):	
@@ -1072,13 +1112,16 @@ with open('arquivo.txt') as final:
 			lista_y_moulton.append(float(leitura[1]))
 			lista_t_moulton.append(float(leitura[2]))
 
-			euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
+			euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,1)
 			adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_moulton[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_moulton, lista_y_moulton)
+			plt.title('Adam-Moulton por Euler_Inverso')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='adam_multon_by_euler_aprimorado'):	
@@ -1092,17 +1135,20 @@ with open('arquivo.txt') as final:
 			lista_y_moulton.append(float(leitura[1]))
 			lista_t_moulton.append(float(leitura[2]))
 
-			euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
+			euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,1)
 			adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_moulton[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_moulton, lista_y_moulton)
+			plt.title('Adam-Moulton por Euler_Aprimorado')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
-		if(leitura[0]=='adam_multon_by_runge_kutta'):	
-			salvar.write('Metodo de Adam_Multon_By_Runge_Kutta\n')
+		if(leitura[0]=='adam_multon_by_euler_aprimorado_sem_previsao'):	
+			salvar.write('Metodo de Adam_Multon_By_Aprimorado_Sem_Previsao\n')
 			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
 			salvar.write('h =  '+ str(leitura[len(leitura)-4])+ '\n')
 
@@ -1112,14 +1158,40 @@ with open('arquivo.txt') as final:
 			lista_y_moulton.append(float(leitura[1]))
 			lista_t_moulton.append(float(leitura[2]))
 
-			runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,0)
+			euler_aprimorado_sem_previsao(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,1)
 			adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
-			for i in range(21):
+			for i in range(valor_passos+1):
+				salvar.write(str(i) + ' ' + str(lista_y_moulton[i]) + '\n')
+			salvar.write('\n')
+
+			plt.plot(lista_t_moulton, lista_y_moulton)
+			plt.title('Adam-Moulton por Euler_Aprimorado_Sem_Previsao')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
+			plt.show()
+
+		if(leitura[0]=='adam_multon_by_runge_kutta'):	
+			salvar.write('Metodo de Adam_Multon_By_Runge_Kutta (ordem=' +str(leitura[len(leitura)-1])+')' +'\n')
+			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
+			salvar.write('h =  '+ str(leitura[len(leitura)-4])+ '\n')
+
+			ordem=int(leitura[len(leitura)-1])
+			valor_passos=int(leitura[len(leitura)-3])
+			valor_h=float(leitura[3])
+			lista_y_moulton.append(float(leitura[1]))
+			lista_t_moulton.append(float(leitura[2]))
+
+			runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_moulton,lista_t_moulton,1)
+			adam_moulton(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_moulton,lista_t_moulton)
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_moulton[i]) + '\n')
 			salvar.write('\n')
 
 
 			plt.plot(lista_t_moulton, lista_y_moulton)
+			plt.title('Adam-Moulton por Runge_Kutta')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		lista_t_moulton.clear()
@@ -1143,11 +1215,14 @@ with open('arquivo.txt') as final:
 			ordem=int(leitura[len(leitura)-1])
 
 			formula_inversa(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_inversa[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_inversa, lista_y_inversa)
+			plt.title('Formula_Inversa')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='formula_inversa_by_euler'):	
@@ -1163,11 +1238,14 @@ with open('arquivo.txt') as final:
 
 			euler(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,1)
 			formula_inversa(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_inversa[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_inversa, lista_y_inversa)
+			plt.title('Formula_Inversa por Euler')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='formula_inversa_by_euler_inverso'):	
@@ -1183,11 +1261,14 @@ with open('arquivo.txt') as final:
 
 			euler_inverso(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,1)
 			formula_inversa(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_inversa[i]) + '\n')
 			salvar.write('\n')
 			
 			plt.plot(lista_t_inversa, lista_y_inversa)
+			plt.title('Formula_Inversa por Euler_Inverso')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='formula_inversa_by_euler_aprimorado'):	
@@ -1203,15 +1284,18 @@ with open('arquivo.txt') as final:
 
 			euler_aprimorado(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,1)
 			formula_inversa(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_inversa[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_inversa, lista_y_inversa)
+			plt.title('Formula_Inversa por Euler_Aprimorado')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		if(leitura[0]=='formula_inversa_by_runge_kutta'):	
-			salvar.write('Metodo de Formula_Inversa_By_Runge_Kutta\n')
+			salvar.write('Metodo de Formula_Inversa_By_Runge_Kutta (ordem=' +str(leitura[len(leitura)-1])+')' +'\n')
 			salvar.write('y(' + str(leitura[2]) +') = ' + str(leitura[1]) + '\n')
 			salvar.write('h =  '+ str(leitura[len(leitura)-4])+ '\n') 
 
@@ -1223,11 +1307,14 @@ with open('arquivo.txt') as final:
 
 			runge_kutta(leitura[len(leitura)-2],valor_h,ordem,lista_y_inversa,lista_t_inversa,1)
 			formula_inversa(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_inversa,lista_t_inversa)
-			for i in range(21):
+			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_inversa[i]) + '\n')
 			salvar.write('\n')
 
 			plt.plot(lista_t_inversa, lista_y_inversa)
+			plt.title('Formula_Inversa por Runge_Kutta')
+			plt.xlabel('Valores de T')
+			plt.ylabel('Pontos de Y')
 			plt.show()
 
 		lista_t_inversa.clear()
