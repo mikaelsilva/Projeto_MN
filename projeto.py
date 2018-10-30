@@ -924,6 +924,7 @@ with open('arquivo.txt') as final:
 			adam_bashforth(leitura[len(leitura)-2],ordem,valor_h,valor_passos,lista_y_adam,lista_t_adam)
 			for i in range(valor_passos+1):
 				salvar.write(str(i) + ' ' + str(lista_y_adam[i]) + '\n')
+			salvar.write('\n')
 
 			plt.plot(lista_t_adam, lista_y_adam)
 			plt.title('Adam-Bashforth')
