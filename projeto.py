@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import sympy 
 
 #---------------------------------------------------------------------------------#
-#OK, Yn+1= Yn+Fn
+#OK, Yn+1= Yn+Fn						    --/Organizar pela função que chama Euler, ordem da func
 def euler(expressao,valor_h,valor_passos,lista_y_euler,lista_t_euler,euler):
 	
 	valor_y=lista_y_euler[0]
